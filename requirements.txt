@@ -1,0 +1,4 @@
+pymodbus==3.0.2
+pyserial==3.5
+pyserial-asyncio==0.6
+tomli==2.0.1
