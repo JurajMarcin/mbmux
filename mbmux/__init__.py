@@ -18,10 +18,10 @@ _logger = logging.getLogger(__name__)
 
 def main() -> None:
     parser = ArgumentParser("Modbus multiplexer")
-    parser.add_argument("--debug", help="Show debug output on stderr",
+    parser.add_argument("--debug", help="show debug output on stderr",
                         action="store_true", default=False)
     parser.add_argument("--config",
-                        help="Load config from the file CONFIG or load config "
+                        help="load config from the file CONFIG or load config "
                         "from files in the directory CONFIG in alphabetical "
                         "order",
                         default="/etc/mbmux")

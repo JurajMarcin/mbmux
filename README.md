@@ -17,21 +17,21 @@ mbmux [OPTIONS]
 
 ## Options
 
-### `-h`, `--help`
+`-h`, `--help`
 
 - show help message and exit
 
-### `--debug`
+`--debug`
 
 - show debug output on stderr
 
-### `--config CONFIG`
+`--config CONFIG`
 
 - load config from the file `CONFIG` or use the directory `CONFIG` as a config
   prefix (i.e. if `CONFIG` is a directory, `CONFIG/config.toml` and files in
   `CONFIG/config.d/` will be loaded)
 
-### Configuration
+## Configuration
 
 By default, config is loaded from files in the directory `/etc/mbmux/` in
 alphabetical order.
