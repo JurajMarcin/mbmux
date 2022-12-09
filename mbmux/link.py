@@ -44,12 +44,14 @@ def _create_client(config: LinkConfig) \
 
 
 class Link:
+    """Class representing a single Modbus link"""
     def __init__(self, config: LinkConfig):
         self.client = _create_client(config)
         self.slave_map = config.slave_map
         self.lock = Lock()
 
     async def execute(self, request: ModbusRequest) -> ModbusResponse:
+        """Sends a request to the connected Modbus link"""
         await self.lock.acquire()
         try:
             await self.client.connect()

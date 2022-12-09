@@ -7,6 +7,7 @@ from tomlconfig import configclass
 
 @configclass
 class TcpClientConfig:
+    """Class holding Modbus/TCP config"""
     rtu: bool = False
     host: str = ""
     port: int = Defaults.TcpPort
@@ -14,6 +15,7 @@ class TcpClientConfig:
 
 @configclass
 class SerialClientConfig:
+    """Class holding Modbus/RTU config"""
     port: str = ""
     ascii: bool = False
     baudrate: int = Defaults.Baudrate
@@ -25,20 +27,19 @@ class SerialClientConfig:
 
 @configclass
 class LinkConfig:
+    """Class holding a single Modbus link config"""
     timeout: int = Defaults.Timeout
     retries: int = Defaults.Retries
-    tcp: TcpClientConfig = TcpClientConfig()
-    serial: SerialClientConfig = SerialClientConfig()
-    slave_map: dict[int, int] = {}
-
-
-@configclass
-class LinksConfigs:
-    link: list[LinkConfig] = field(default_factory=list)
+    tcp: TcpClientConfig = field(default_factory=TcpClientConfig)
+    serial: SerialClientConfig = field(default_factory=SerialClientConfig)
+    slave_map: dict[int, int] = field(default_factory=dict)
 
 
 @configclass
 class Config:
+    """Class holding the main mbmux config"""
     address: str = "0.0.0.0"
     port: int = Defaults.TcpPort
     debug: bool = False
+
+    link: list[LinkConfig] = field(default_factory=list)

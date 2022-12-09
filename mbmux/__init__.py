@@ -1,12 +1,14 @@
+from argparse import ArgumentParser
 import asyncio
 import logging
+from os.path import isdir
+from sys import stderr
 
 from pymodbus.device import ModbusDeviceIdentification
 from pymodbus.server.async_io import StartAsyncTcpServer
+from tomlconfig import ConfigError, parse
 
-from tomlconfig import parse
-
-from .config import Config, LinksConfigs
+from .config import Config
 from .handler import MuxHandler
 from .link import Link
 
@@ -15,6 +17,38 @@ _logger = logging.getLogger(__name__)
 
 
 def main() -> None:
+    parser = ArgumentParser("Modbus multiplexer")
+    parser.add_argument("--debug", help="Show debug output on stderr",
+                        action="store_true", default=False)
+    parser.add_argument("--config",
+                        help="Load config from the file CONFIG or load config "
+                        "from files in the directory CONFIG in alphabetical "
+                        "order",
+                        default="/etc/mbmux")
+    args = parser.parse_args()
+
+    try:
+        config = parse(Config, conf_d_path=args.config) \
+            if isdir(args.config) else parse(Config, conf_path=args.config)
+    except FileNotFoundError as ex:
+        raise ConfigError("No configuration!") from ex
+    if args.debug:
+        config.debug = True
+
+    log_handler = logging.StreamHandler(stderr)
+    log_handler.setFormatter(
+        logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s"),
+    )
+    _logger.addHandler(log_handler)
+    _logger.setLevel(logging.DEBUG if config.debug else logging.INFO)
+
+    for link_config in config.link:
+        link = Link(link_config)
+        for slave_id in link.slave_map:
+            MuxHandler.links[slave_id] = link
+
+    _logger.info("Starting ModbusTCP server listening on %s:%s",
+                 config.address, config.port)
     identity = ModbusDeviceIdentification(info_name={
         "VendorName": "JurajMarcin",
         "ProductCode": "MX",
@@ -23,25 +57,8 @@ def main() -> None:
         "ModelName": "mbmux",
         "MajorMinorRevision": "1.0.0",
     })
-
-    config = parse(Config, "config.toml")
-    links_config = parse(LinksConfigs, "links.toml", "links.d")
-    for link_config in links_config.link:
-        link = Link(link_config)
-        for slave_id in link.slave_map:
-            MuxHandler.links[slave_id] = link
-
-    if config.debug:
-        _logger.setLevel(logging.DEBUG)
-
-    _logger.info("Starting ModbusTCP server listening on %s:%s",
-                 config.address, config.port)
     asyncio.run(StartAsyncTcpServer(identity=identity,
                                     address=(config.address, config.port),
                                     handler=MuxHandler,
                                     allow_reuse_address=True),
                 debug=config.debug)
-
-
-if __name__ == "__main__":
-    main()

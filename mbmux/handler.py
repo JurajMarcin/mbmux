@@ -12,6 +12,7 @@ _logger = logging.getLogger(__name__)
 
 
 class MuxHandler(ModbusConnectedRequestHandler):
+    """Class handling incoming Modbus connections and multiplexing requests"""
     links: dict[int, Link] = {}
 
     def __init__(self, owner: ModbusTcpServer) -> None:
@@ -21,7 +22,7 @@ class MuxHandler(ModbusConnectedRequestHandler):
     def _callback(self, request: ModbusRequest) -> None:
         self.queue.put_nowait(request)
 
-    async def handle(self):
+    async def handle(self) -> None:
         while self.running:
             try:
                 data = await self.receive_queue.get()
@@ -44,7 +45,7 @@ class MuxHandler(ModbusConnectedRequestHandler):
             except CancelledError:
                 # catch and ignore cancellation errors
                 self.running = False
-            except Exception as e:
-                _logger.error("Unknown exception %r, disconnect from %r", e,
+            except Exception as ex:
+                _logger.error("Unknown exception %r, disconnect from %r", ex,
                               self.client_address)
                 self.transport.close()
