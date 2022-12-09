@@ -27,9 +27,8 @@ mbmux [OPTIONS]
 
 `--config CONFIG`
 
-- load config from the file `CONFIG` or use the directory `CONFIG` as a config
-  prefix (i.e. if `CONFIG` is a directory, `CONFIG/config.toml` and files in
-  `CONFIG/config.d/` will be loaded)
+- load config from the file `CONFIG` or load config from files in the directory
+  `CONFIG` in alphabetical order
 
 ## Configuration
 
