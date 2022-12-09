@@ -1,3 +1,23 @@
-address = "0.0.0.0"
+# Server configuration
 port = 5020
 debug = true
+
+
+# Modbus link
+[[link]]
+slave_map = { 1 = 1, 3 = 2 }
+
+# Link TCP options
+[link.tcp]
+host = "localhost"
+port = 5001
+
+
+# Another Modbus link
+[[link]]
+slave_map = { 2 = 1, 4 = 2 }
+
+# Link TCP options
+[link.tcp]
+host = "localhost"
+port = 5002
