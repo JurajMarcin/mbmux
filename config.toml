@@ -1,23 +1,70 @@
-# Server configuration
-port = 5020
-debug = true
+# ====== #
+# Server #
+# ====== #
+
+## Address the Modbus/TCP server binds to
+##: str
+#address = "0.0.0.0"
+## Port the Modbus/TCP server binds to
+##: int
+#port = 502
+## Print debug information to stderr
+##: bool
+#debug = false
 
 
-# Modbus link
-[[link]]
-slave_map = { 1 = 1, 3 = 2 }
+# ============ #
+# Modbus links #
+# ============ #
 
-# Link TCP options
-[link.tcp]
-host = "localhost"
-port = 5001
+## Example Modbus link, multiple can be defined
+#[[link]]
+#    # Timeout of the client in seconds.
+#    #: int
+#    timeout = 3
+#    # Number of retries the client should try before failing
+#    #: int
+#    retries = 3
+#    # Map of Modbus slave ids
+#    # Id in the incoming request is used as key and id in the outgoing request
+#    # is value from the map
+#    # If the id is not found in the map, it is left intact
+#    #: dict[int, int]
+#    slave_map = { }
 
+#    # Modbus TCP connection
+#    [link.tcp]
+#        # Use RTU over TCP
+#        #: bool
+#        rtu = false
+#        # Address of the target Modbus device
+#        #: str
+#        address = ""
+#        # Modbus port on the target device
+#        #: int
+#        port = 502
 
-# Another Modbus link
-[[link]]
-slave_map = { 2 = 1, 4 = 2 }
-
-# Link TCP options
-[link.tcp]
-host = "localhost"
-port = 5002
+#    # Modbus Serial connection
+#    # If both TCP and Serial connections are specified, TCP connection is used
+#    [link.serial]
+#        # Serial port path
+#        #: str
+#        port = ""
+#        # Use ASCII transmission
+#        #: bool
+#        ascii = false
+#        # Number of bits per second
+#        #: int
+#        baudrate = 19200
+#        # Number of bits per byte
+#        #: int (7 - 8)
+#        bytesize = 8
+#        # Parity bit
+#        #: str ("E"ven, "O"dd, "N"one)
+#        parity = "N"
+#        # Number of stopbits
+#        #: int (0 - 2)
+#        stopbits = 1
+#        # Discard local echo
+#        #: bool
+#        handle_local_echo = false

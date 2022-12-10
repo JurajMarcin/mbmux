@@ -25,7 +25,7 @@ def _create_client(config: LinkConfig) \
         -> AsyncModbusTcpClient | AsyncModbusSerialClient:
     if config.tcp is not None:
         return AsyncModbusTcpClient(
-            config.tcp.host,
+            config.tcp.address,
             port=config.tcp.port,
             framer=ModbusRtuFramer if config.tcp.rtu else ModbusSocketFramer,
             **_get_client_args(config)

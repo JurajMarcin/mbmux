@@ -9,7 +9,7 @@ from tomlconfig import configclass
 class TcpClientConfig:
     """Class holding Modbus/TCP config"""
     rtu: bool = False
-    host: str = ""
+    address: str = ""
     port: int = Defaults.TcpPort
 
 
@@ -30,9 +30,9 @@ class LinkConfig:
     """Class holding a single Modbus link config"""
     timeout: int = Defaults.Timeout
     retries: int = Defaults.Retries
+    slave_map: dict[int, int] = field(default_factory=dict)
     tcp: TcpClientConfig = field(default_factory=TcpClientConfig)
     serial: SerialClientConfig = field(default_factory=SerialClientConfig)
-    slave_map: dict[int, int] = field(default_factory=dict)
 
 
 @configclass

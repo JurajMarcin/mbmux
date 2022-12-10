@@ -1,12 +1,12 @@
 [project]
 name = "mbmux"
 description = "Software multiplexer of Modbus TCP and RTU"
-version = "1.0.0"
+version = "1.0.1"
 requires-python = ">=3.10"
 license = {file = "LICENSE"}
 dependencies = [
     "pymodbus[serial] >= 3.0.2",
-    "tomlconfig @ git+https://github.com/JurajMarcin/tomlconfig.git@1.0.0",
+    "tomlconfig @ git+https://github.com/JurajMarcin/tomlconfig.git@1.1.1",
 ]
 
 [project.scripts]

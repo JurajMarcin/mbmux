@@ -35,5 +35,4 @@ mbmux [OPTIONS]
 By default, config is loaded from files in the directory `/etc/mbmux/` in
 alphabetical order.
 
-See `CONFIGURATION.md` for all description of all config options or
-`config.toml` for a simple example.
+See `config.toml` for more information about options that can be configured.
