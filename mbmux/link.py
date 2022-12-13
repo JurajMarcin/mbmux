@@ -46,28 +46,36 @@ def _create_client(config: LinkConfig) \
 class Link:
     """Class representing a single Modbus link"""
     def __init__(self, config: LinkConfig):
-        self.client = _create_client(config)
-        self.slave_map = config.slave_map
+        self.config = config
         self.lock = Lock()
 
     async def execute(self, request: ModbusRequest) -> ModbusResponse:
         """Sends a request to the connected Modbus link"""
         await self.lock.acquire()
+        _logger.debug("Aquired lock on %r", self)
         try:
-            await self.client.connect()
+            client = _create_client(self.config)
+            await client.connect()
             old_unit_id: int = request.unit_id
-            if old_unit_id in self.slave_map:
-                request.unit_id = self.slave_map[old_unit_id]
+            if old_unit_id in self.config.slave_map:
+                request.unit_id = self.config.slave_map[old_unit_id]
             _logger.debug("Forwarding request %r to slave %r on %r", request,
-                          request.unit_id, self.client)
-            result: ModbusResponse = await self.client.execute(request)
+                          request.unit_id, self)
+            result: ModbusResponse = await client.execute(request)
             _logger.debug("Received response %r from slave %r on %r", result,
-                          request.unit_id, self.client)
+                          request.unit_id, self)
             result.unit_id = old_unit_id
             return result
         finally:
-            await self.client.close()
-            self.lock.release()
+            try:
+                await client.close()
+            finally:
+                _logger.debug("Released lock on %r", self)
+                self.lock.release()
 
     def __str__(self) -> str:
-        return f"Link<{self.client}>"
+        if self.config.tcp is not None:
+            return f"Link<{self.config.tcp.address}>"
+        if self.config.serial is not None:
+            return f"Link<{self.config.serial.port}>"
+        return "Link<unknown>"

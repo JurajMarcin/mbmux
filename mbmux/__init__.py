@@ -46,7 +46,7 @@ def main() -> None:
 
     for link_config in config.link:
         link = Link(link_config)
-        for slave_id in link.slave_map:
+        for slave_id in link_config.slave_map:
             MuxHandler.links[slave_id] = link
 
     _logger.info("Starting ModbusTCP server listening on %s:%s",
