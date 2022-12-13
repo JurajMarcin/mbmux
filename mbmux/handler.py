@@ -31,10 +31,12 @@ class MuxHandler(ModbusConnectedRequestHandler):
                                                   callback=self._callback,
                                                   unit=list(self.links.keys()))
                 request = self.queue.get_nowait()
+                old_transaction_id = request.transaction_id
                 _logger.debug("Received %r from %r", request,
                               self.client_address)
                 slave_result = \
                     await self.links[request.unit_id].execute(request)
+                slave_result.transaction_id = old_transaction_id
                 _logger.debug("Sending %r to %r", slave_result,
                               self.client_address)
                 self.send(slave_result)
