@@ -28,7 +28,8 @@
 #    # Map of Modbus slave ids
 #    # Id in the incoming request is used as key and id in the outgoing request
 #    # is value from the map
-#    # If the id is not found in the map, it is left intact
+#    # Keys must be globally unique (they are used to route the request to the
+#    # correct link)
 #    #: dict[int, int]
 #    slave_map = { }
 
